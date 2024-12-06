@@ -81,6 +81,11 @@ public class GameScreen extends JPanel implements ActionListener, MouseMotionLis
             return;
         }
 
+        // Boss spawns independently when score reaches 250
+        if (score >= 250 && boss == null) {
+            boss = new Boss();
+        }
+
         // Check for level progression
         if (score >= currentLevel * 100) { // Example: 100 points per level
             currentLevel++;
@@ -88,7 +93,7 @@ public class GameScreen extends JPanel implements ActionListener, MouseMotionLis
             objectsPerLevel++; // Optional: Increase the number of objects added per level
         }
 
-        // Existing logic for updating apples, cookies, and boss
+        // Update apples
         for (Apple apple : apples) {
             apple.fall();
             if (basket.catchApple(apple)) {
@@ -100,6 +105,7 @@ public class GameScreen extends JPanel implements ActionListener, MouseMotionLis
             }
         }
 
+        // Update cookies
         for (Cookie cookie : cookies) {
             cookie.fall();
             if (basket.catchCookie(cookie)) {
@@ -111,15 +117,17 @@ public class GameScreen extends JPanel implements ActionListener, MouseMotionLis
             }
         }
 
+        // Update boss
         if (boss != null) {
             boss.move();
             if (boss.isHit(basket.getX(), basket.getY(), basket.getWidth(), basket.getHeight())) {
-                gameOver = true;
+                gameOver = true; // Game over if boss hits the basket
             }
         }
 
         repaint();
     }
+
 
     @Override
     public void mouseMoved(MouseEvent e) {
@@ -235,7 +243,7 @@ public class GameScreen extends JPanel implements ActionListener, MouseMotionLis
         }
 
         public void fall() {
-            y += speed + currentLevel;
+            y += speed + (currentLevel/4);
         }
 
         public void draw(Graphics2D g) {
